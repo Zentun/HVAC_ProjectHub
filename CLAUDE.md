@@ -14,6 +14,7 @@ HVAC_ProjectHub is a project management hub for HVAC (Heating, Ventilation, and 
 ## Általános szabályok
 
 - Mindig magyarul válaszolj.
+- **Session végén:** mindig frissítsd ezt a fájlt — jelöld meg az elvégzett feladatokat a "Következő lépések" szekcióban, és adj hozzá bármit, ami megváltozott (új fájlok, döntések, struktúraváltozások). Csak valóban megváltozott dolgokat írj bele.
 
 ## Tech stack
 
@@ -137,10 +138,20 @@ Számla               → Projekt_ID
 - `CLAUDE.md` — ez a fájl
 - `README.md` — projekt leírás placeholder
 - `Ugyfelnyilvantarto_WorkDiary.docx` — eredeti tervezési dokumentum
-- `createHVACDatabase.gs` — Google Apps Script, amely létrehozta az adatbázis spreadsheet-et
+- `createHVACDatabase.gs` — létrehozza az adatbázis spreadsheet összes fülét
+- `bevitel.gs` — beviteli lapok és mentési makrók (ügyfél + projekt)
+- `end_session.bat` — session végi git commit + push
+- `start_claude.bat` — Claude Code indítása üdvözlő prompttal
+
+## Elvégzett feladatok
+
+- [x] Adatbázis struktúra tervezése (összes fül, oszlopok, kapcsolatok)
+- [x] `createHVACDatabase.gs` megírva és futtatva — spreadsheet létrehozva
+- [x] `bevitel.gs` megírva: `Bevitel_Ügyfél` és `Bevitel_Projekt` lapok, ID auto-generálás, mentési makrók
+- [x] `end_session.bat` és `start_claude.bat` létrehozva
 
 ## Következő lépések
 
-- Makrók megírása: új ügyfél létrehozása, új projekt indítása
-- ID auto-generálás implementálása
-- Dashboard fül tervezése
+- `setupBevitelSheetsek()` futtatása a spreadsheet-ben (beviteli lapok létrehozása)
+- Desktop: gombok rajzolása (Insert → Drawing) és makrók hozzárendelése
+- Dashboard fül tervezése és megírása
