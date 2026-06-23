@@ -1,10 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" log --oneline --all)",
-      "Bash(git config *)",
-      "Bash(git *)",
-      "PowerShell(git *)"
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(git clone *)",
+      "PowerShell(git clone *)",
+      "PowerShell(cmd /c rmdir /s /q \"C:\\\\Claude\\\\HVAC_ProjectHub\\\\Claudeclaude-dotfiles\")",
+      "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" status)",
+      "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" diff)",
+      "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" add start_claude.bat .claude/settings.local.json)",
+      "Bash(git -C 'C:\\\\Claude\\\\HVAC_ProjectHub' commit -m ' *)"
     ]
   }
 }

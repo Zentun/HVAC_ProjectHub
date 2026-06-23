@@ -2,7 +2,7 @@
 chcp 65001 >nul
 
 echo [dotfiles] Frissites githubrol...
-cd /d "C:\Claude\dotfiles"
+cd /d "C:\Claude\claude-dotfiles"
 git pull
 echo.
 
