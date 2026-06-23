@@ -28,7 +28,7 @@ echo.
 
 :: --- dotfiles ---
 :dotfiles
-cd /d C:\Claude\dotfiles
+cd /d C:\Claude\claude-dotfiles
 
 echo [dotfiles] Valtozasok ellenorzese...
 git status --short
