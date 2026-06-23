@@ -9,7 +9,11 @@
       "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" status)",
       "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" diff)",
       "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" add start_claude.bat .claude/settings.local.json)",
-      "Bash(git -C 'C:\\\\Claude\\\\HVAC_ProjectHub' commit -m ' *)"
+      "Bash(git -C 'C:\\\\Claude\\\\HVAC_ProjectHub' commit -m ' *)",
+      "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" config user.email \"zeno.domotor@gmail.com\")",
+      "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" config user.name \"Zentun\")",
+      "Bash(git *)",
+      "Bash(dir C:\\\\Claude\\\\claude-dotfiles *)"
     ]
   }
 }

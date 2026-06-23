@@ -16,6 +16,18 @@ HVAC_ProjectHub is a project management hub for HVAC (Heating, Ventilation, and 
 - Mindig magyarul válaszolj.
 - **Session végén:** mindig frissítsd ezt a fájlt — jelöld meg az elvégzett feladatokat a "Következő lépések" szekcióban, és adj hozzá bármit, ami megváltozott (új fájlok, döntések, struktúraváltozások). Csak valóban megváltozott dolgokat írj bele.
 
+## `end session` kulcsszó
+
+Ha a beszélgetésben beírod: **`end session`**
+
+Claude elvégzi a session lezárását:
+
+1. Ellenőrzi a változásokat (`git status`) a `C:\Claude\HVAC_ProjectHub` mappában
+2. Ha van változás: megkérdezi a commit üzenetet (alapértelmezett: `Session frissites`), majd `git add -A` + commit + `git push origin main`
+3. Ellenőrzi a változásokat a `C:\Claude\claude-dotfiles` mappában
+4. Ha ott is van változás: `git add -A` + commit -m `dotfiles frissites` + `git push origin master`
+5. Ha sehol nincs változás: jelzi, hogy nincs teendő
+
 ## Tech stack
 
 - **Adatbázis:** Google Sheets (egy spreadsheet, több fül)
@@ -140,7 +152,6 @@ Számla               → Projekt_ID
 - `Ugyfelnyilvantarto_WorkDiary.docx` — eredeti tervezési dokumentum
 - `createHVACDatabase.gs` — létrehozza az adatbázis spreadsheet összes fülét
 - `bevitel.gs` — beviteli lapok és mentési makrók (ügyfél + projekt)
-- `end_session.bat` — session végi git commit + push
 - `start_claude.bat` — Claude Code indítása üdvözlő prompttal
 
 ## Elvégzett feladatok
