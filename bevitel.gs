@@ -2,20 +2,14 @@
 
 function setupBevitelSheetsek() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-
-  var ex1 = ss.getSheetByName("Bevitel_Ügyfél");
-  var ex2 = ss.getSheetByName("Bevitel_Projekt");
-  if (ex1) ss.deleteSheet(ex1);
-  if (ex2) ss.deleteSheet(ex2);
-
   setupBevitelUgyfél_(ss);
   setupBevitelProjekt_(ss);
-
-  ss.toast("Beviteli lapok létrehozva!", "Kész", 4);
+  ss.toast("Beviteli lapok frissítve!", "Kész", 4);
 }
 
 function setupBevitelUgyfél_(ss) {
-  var sheet = ss.insertSheet("Bevitel_Ügyfél");
+  var sheet = ss.getSheetByName("Bevitel_Ügyfél") || ss.insertSheet("Bevitel_Ügyfél");
+  sheet.clear();
 
   // Fejléc
   sheet.getRange("A1:B1").merge()
@@ -34,12 +28,16 @@ function setupBevitelUgyfél_(ss) {
       .setBorder(true, true, true, true, false, false);
   }
 
-  // Mentés gomb (cella — Androidon: Extensions → Macros → mentesUgyfelet)
-  sheet.getRange("A9:B9").merge()
-    .setValue("▶   ÜGYFÉL MENTÉSE")
-    .setBackground("#34a853").setFontColor("#ffffff")
-    .setFontWeight("bold").setFontSize(11)
-    .setHorizontalAlignment("center");
+  // Művelet dropdown
+  sheet.getRange("A9").setValue("Művelet:").setFontWeight("bold");
+  var muveletRule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["— Válassz műveletet —", "Ügyfél mentése"], true)
+    .setAllowInvalid(false).build();
+  sheet.getRange("B9")
+    .setValue("— Válassz műveletet —")
+    .setDataValidation(muveletRule)
+    .setBackground("#f8f9fa")
+    .setBorder(true, true, true, true, false, false);
 
   // Státusz sor (visszajelzés makró futás után)
   sheet.getRange("A11").setValue("Státusz:").setFontColor("#888888").setFontStyle("italic");
@@ -55,7 +53,8 @@ function setupBevitelUgyfél_(ss) {
 }
 
 function setupBevitelProjekt_(ss) {
-  var sheet = ss.insertSheet("Bevitel_Projekt");
+  var sheet = ss.getSheetByName("Bevitel_Projekt") || ss.insertSheet("Bevitel_Projekt");
+  sheet.clear();
   var ugyfelSheet = ss.getSheetByName("Ügyfelek");
 
   // Fejléc
@@ -75,7 +74,7 @@ function setupBevitelProjekt_(ss) {
     .setBackground("#f8f9fa")
     .setBorder(true, true, true, true, false, false);
 
-  // Ügyfél_ID (automatikus, képlettel)
+  // Ügyfél_ID (automatikus, képlettel — belső mező, nem megjelenített)
   sheet.getRange("A4").setValue("Ügyfél_ID").setFontWeight("bold").setFontColor("#888888");
   sheet.getRange("B4")
     .setFormula('=IFERROR(INDEX(Ügyfelek!A:A,MATCH(B3,Ügyfelek!B:B,0)),"")')
@@ -91,33 +90,36 @@ function setupBevitelProjekt_(ss) {
     .setBackground("#f8f9fa")
     .setBorder(true, true, true, true, false, false);
 
-  // Megjegyzés
-  sheet.getRange("A6").setValue("Megjegyzés").setFontWeight("bold");
+  // Leírás (kötelező — ebből képződik a projekt neve)
+  sheet.getRange("A6").setValue("Leírás *").setFontWeight("bold");
   sheet.getRange("B6")
     .setBackground("#f8f9fa")
     .setBorder(true, true, true, true, false, false);
 
-  // Új ügyfél gomb (átnavigál a Bevitel_Ügyfél fülre)
-  sheet.getRange("A8:B8").merge()
-    .setValue("▶   ÚJ ÜGYFÉL LÉTREHOZÁSA  →  Bevitel_Ügyfél fül")
-    .setBackground("#f9ab00").setFontColor("#ffffff")
-    .setFontWeight("bold").setFontSize(11)
-    .setHorizontalAlignment("center");
+  // Megjegyzés
+  sheet.getRange("A7").setValue("Megjegyzés").setFontWeight("bold");
+  sheet.getRange("B7")
+    .setBackground("#f8f9fa")
+    .setBorder(true, true, true, true, false, false);
 
-  // Mentés gomb
-  sheet.getRange("A9:B9").merge()
-    .setValue("▶   PROJEKT MENTÉSE")
-    .setBackground("#34a853").setFontColor("#ffffff")
-    .setFontWeight("bold").setFontSize(11)
-    .setHorizontalAlignment("center");
+  // Művelet dropdown
+  sheet.getRange("A9").setValue("Művelet:").setFontWeight("bold");
+  var muveletRule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["— Válassz műveletet —", "Projekt mentése", "→ Új ügyfél létrehozása"], true)
+    .setAllowInvalid(false).build();
+  sheet.getRange("B9")
+    .setValue("— Válassz műveletet —")
+    .setDataValidation(muveletRule)
+    .setBackground("#f8f9fa")
+    .setBorder(true, true, true, true, false, false);
 
   // Státusz sor
-  sheet.getRange("A11").setValue("Státusz:").setFontColor("#888888").setFontStyle("italic");
-  sheet.getRange("B11").setValue("—").setFontColor("#888888");
+  sheet.getRange("A12").setValue("Státusz:").setFontColor("#888888").setFontStyle("italic");
+  sheet.getRange("B12").setValue("—").setFontColor("#888888");
 
   // Utoljára mentve
-  sheet.getRange("A12").setValue("Utoljára mentve:").setFontColor("#888888").setFontStyle("italic");
-  sheet.getRange("B12").setValue("—").setFontColor("#888888");
+  sheet.getRange("A13").setValue("Utoljára mentve:").setFontColor("#888888").setFontStyle("italic");
+  sheet.getRange("B13").setValue("—").setFontColor("#888888");
 
   sheet.setColumnWidth(1, 160);
   sheet.setColumnWidth(2, 300);
@@ -197,34 +199,42 @@ function mentesProjektet() {
   var ugyfelNev = bevitel.getRange("B3").getValue().toString().trim();
   var ugyfelId  = bevitel.getRange("B4").getValue().toString().trim();
   var tipus     = bevitel.getRange("B5").getValue().toString().trim();
+  var leiras    = bevitel.getRange("B6").getValue().toString().trim();
+  var megjegyzes = bevitel.getRange("B7").getValue();
 
   if (!ugyfelNev || !ugyfelId) {
-    bevitel.getRange("B11").setValue("HIBA: Ügyfél kiválasztása kötelező!").setFontColor("#d93025");
+    bevitel.getRange("B12").setValue("HIBA: Ügyfél kiválasztása kötelező!").setFontColor("#d93025");
     return;
   }
   if (!tipus) {
-    bevitel.getRange("B11").setValue("HIBA: A Típus mező kitöltése kötelező!").setFontColor("#d93025");
+    bevitel.getRange("B12").setValue("HIBA: A Típus mező kitöltése kötelező!").setFontColor("#d93025");
+    return;
+  }
+  if (!leiras) {
+    bevitel.getRange("B12").setValue("HIBA: A Leírás mező kitöltése kötelező!").setFontColor("#d93025");
     return;
   }
 
   var id = generateProjektId_(ss);
   var ma = Utilities.formatDate(new Date(), "Europe/Budapest", "yyyy-MM-dd");
+  var projektNev = ugyfelNev + " - " + leiras;
 
   projektek.appendRow([
     id,
     ugyfelId,
+    leiras,
     tipus,
     "megkeresés",
     ma,
-    bevitel.getRange("B6").getValue()
+    megjegyzes
   ]);
 
-  bevitel.getRange("B12").setValue(id + " — " + ugyfelNev).setFontColor("#0d652d");
-  bevitel.getRange("B11").setValue("OK — sikeresen mentve").setFontColor("#0d652d");
+  bevitel.getRange("B13").setValue(id + " — " + projektNev).setFontColor("#0d652d");
+  bevitel.getRange("B12").setValue("OK — sikeresen mentve").setFontColor("#0d652d");
   bevitel.getRange("B3").clearContent();
-  bevitel.getRange("B5:B6").clearContent();
+  bevitel.getRange("B5:B7").clearContent();
 
-  ss.toast(id + " — " + ugyfelNev, "Projekt mentve ✓", 5);
+  ss.toast(id + " — " + projektNev, "Projekt mentve ✓", 5);
 }
 
 function navigalUgyfelBevitelre() {

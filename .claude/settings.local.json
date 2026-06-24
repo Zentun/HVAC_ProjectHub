@@ -13,7 +13,8 @@
       "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" config user.email \"zeno.domotor@gmail.com\")",
       "Bash(git -C \"C:\\\\Claude\\\\HVAC_ProjectHub\" config user.name \"Zentun\")",
       "Bash(git *)",
-      "Bash(dir C:\\\\Claude\\\\claude-dotfiles *)"
+      "Bash(dir C:\\\\Claude\\\\claude-dotfiles *)",
+      "PowerShell(git *)"
     ]
   }
 }

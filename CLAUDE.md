@@ -58,6 +58,7 @@ Claude elvégzi a session lezárását:
 |---|---|---|
 | Projekt_ID | Szöveg | Auto-generált, pl. `P-2026-0001` |
 | Ügyfél_ID | Szöveg | Kötelező |
+| Leírás | Szöveg | Kötelező — projekt neve = Ügyfél neve + " - " + Leírás |
 | Típus | Lista | telepítés / karbantartás / javítás |
 | Státusz | Lista | megkeresés → felmérés → árajánlat → megrendelés → telepítés → lezárva |
 | Létrehozva | Dátum | |
@@ -152,6 +153,8 @@ Számla               → Projekt_ID
 - `Ugyfelnyilvantarto_WorkDiary.docx` — eredeti tervezési dokumentum
 - `createHVACDatabase.gs` — létrehozza az adatbázis spreadsheet összes fülét
 - `bevitel.gs` — beviteli lapok és mentési makrók (ügyfél + projekt)
+- `projekt_nezet.gs` — projekt nézet lap: adatok, státusz pipeline, kapcsolódó rekordok
+- `triggers.gs` — onEdit trigger: Művelet dropdown cellák kezelik a beviteli és nézet lapok akcióit
 - `start_claude.bat` — Claude Code indítása üdvözlő prompttal
 
 ## Elvégzett feladatok
@@ -163,6 +166,10 @@ Számla               → Projekt_ID
 
 ## Következő lépések
 
-- `setupBevitelSheetsek()` futtatása a spreadsheet-ben (beviteli lapok létrehozása)
-- Desktop: gombok rajzolása (Insert → Drawing) és makrók hozzárendelése
+- [x] `setupBevitelSheetsek()` futtatása a spreadsheet-ben (beviteli lapok létrehozása)
+- [x] Gombok helyett lenyíló menük (dropdown) a beviteli lapokon — `triggers.gs` kezeli az `onEdit` triggerrel
+- [x] `projekt_nezet.gs` megírva — Projekt_Nézet lap, státusz pipeline, kapcsolódó rekordok
+- [x] `triggers.gs` megírva — onEdit trigger, minden Művelet dropdown kezelése
+- `triggers.gs` + `projekt_nezet.gs` Apps Script szerkesztőbe másolása, `setupProjektNezet()` futtatása
+- `setupBevitelSheetsek()` újrafuttatása (dropdown frissítés) + triggers.gs telepítése után tesztelés
 - Dashboard fül tervezése és megírása

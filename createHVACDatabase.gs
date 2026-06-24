@@ -48,11 +48,11 @@ function setupUgyfelek(ss) {
 
 function setupProjektek(ss) {
   var sheet = ss.insertSheet("Projektek");
-  var headers = ["Projekt_ID", "Ügyfél_ID", "Típus", "Státusz", "Létrehozva", "Megjegyzés"];
+  var headers = ["Projekt_ID", "Ügyfél_ID", "Leírás", "Típus", "Státusz", "Létrehozva", "Megjegyzés"];
   formatSheet(sheet, headers);
-  addDropdown(sheet, 3, 1000, ["telepítés", "karbantartás", "javítás"]);
-  addDropdown(sheet, 4, 1000, ["megkeresés", "felmérés", "árajánlat", "megrendelés", "telepítés", "lezárva"]);
-  sheet.getRange("E2:E1000").setNumberFormat("yyyy-mm-dd");
+  addDropdown(sheet, 4, 1000, ["telepítés", "karbantartás", "javítás"]);
+  addDropdown(sheet, 5, 1000, ["megkeresés", "felmérés", "árajánlat", "megrendelés", "telepítés", "lezárva"]);
+  sheet.getRange("F2:F1000").setNumberFormat("yyyy-mm-dd");
 }
 
 function setupFelmeres(ss) {
