@@ -4,6 +4,7 @@ function setupBevitelSheetsek() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   setupBevitelUgyfél_(ss);
   setupBevitelProjekt_(ss);
+  setupBevitelTetel_(ss);
   ss.toast("Beviteli lapok frissítve!", "Kész", 4);
 }
 
@@ -236,6 +237,105 @@ function mentesProjektet() {
   bevitel.getRange("B5:B7").clearContent();
 
   ss.toast(id + " — " + projektNev, "Projekt mentve ✓", 5);
+}
+
+function setupBevitelTetel_(ss) {
+  var sheet = ss.getSheetByName("Bevitel_Tétel") || ss.insertSheet("Bevitel_Tétel");
+  sheet.clear();
+
+  sheet.getRange("A1:B1").merge()
+    .setValue("ÚJ KATALÓGUS TÉTEL")
+    .setFontSize(14).setFontWeight("bold")
+    .setBackground("#f9ab00").setFontColor("#ffffff")
+    .setHorizontalAlignment("center");
+
+  sheet.getRange("A3").setValue("Kategória *").setFontWeight("bold");
+  var katRule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["berendezés", "szerelési anyag"], true)
+    .setAllowInvalid(false).build();
+  sheet.getRange("B3").setDataValidation(katRule)
+    .setBackground("#f8f9fa").setBorder(true, true, true, true, false, false);
+
+  sheet.getRange("A4").setValue("Megnevezés *").setFontWeight("bold");
+  sheet.getRange("B4").setBackground("#f8f9fa").setBorder(true, true, true, true, false, false);
+
+  sheet.getRange("A5").setValue("Egység *").setFontWeight("bold");
+  var egysegRule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["db", "m", "m²", "kg", "óra", "csomag"], true)
+    .setAllowInvalid(false).build();
+  sheet.getRange("B5").setDataValidation(egysegRule)
+    .setBackground("#f8f9fa").setBorder(true, true, true, true, false, false);
+
+  sheet.getRange("A6").setValue("Egységár nettó *").setFontWeight("bold");
+  sheet.getRange("B6").setBackground("#f8f9fa").setBorder(true, true, true, true, false, false)
+    .setNumberFormat("#,##0");
+
+  sheet.getRange("A7").setValue("Megjegyzés").setFontWeight("bold");
+  sheet.getRange("B7").setBackground("#f8f9fa").setBorder(true, true, true, true, false, false);
+
+  sheet.getRange("A9").setValue("Művelet:").setFontWeight("bold");
+  var muveletRule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["— Válassz műveletet —", "Tétel mentése"], true)
+    .setAllowInvalid(false).build();
+  sheet.getRange("B9").setValue("— Válassz műveletet —")
+    .setDataValidation(muveletRule)
+    .setBackground("#f8f9fa").setBorder(true, true, true, true, false, false);
+
+  sheet.getRange("A11").setValue("Státusz:").setFontColor("#888888").setFontStyle("italic");
+  sheet.getRange("B11").setValue("—").setFontColor("#888888");
+  sheet.getRange("A12").setValue("Utoljára mentve:").setFontColor("#888888").setFontStyle("italic");
+  sheet.getRange("B12").setValue("—").setFontColor("#888888");
+
+  sheet.setColumnWidth(1, 160);
+  sheet.setColumnWidth(2, 300);
+  sheet.setFrozenRows(1);
+}
+
+function mentesTetel() {
+  var ss     = SpreadsheetApp.getActiveSpreadsheet();
+  var bevitel = ss.getSheetByName("Bevitel_Tétel");
+  var tetelek = ss.getSheetByName("Árajánlat_tételek");
+
+  var kat    = bevitel.getRange("B3").getValue().toString().trim();
+  var megnev = bevitel.getRange("B4").getValue().toString().trim();
+  var egys   = bevitel.getRange("B5").getValue().toString().trim();
+  var ar     = bevitel.getRange("B6").getValue();
+  var megj   = bevitel.getRange("B7").getValue();
+
+  if (!kat) {
+    bevitel.getRange("B11").setValue("HIBA: Kategória megadása kötelező!").setFontColor("#d93025"); return;
+  }
+  if (!megnev) {
+    bevitel.getRange("B11").setValue("HIBA: Megnevezés megadása kötelező!").setFontColor("#d93025"); return;
+  }
+  if (!egys) {
+    bevitel.getRange("B11").setValue("HIBA: Egység megadása kötelező!").setFontColor("#d93025"); return;
+  }
+  if (!ar) {
+    bevitel.getRange("B11").setValue("HIBA: Egységár megadása kötelező!").setFontColor("#d93025"); return;
+  }
+
+  var id = generateTetelId_(ss);
+  tetelek.appendRow([id, kat, megnev, egys, ar, megj]);
+
+  bevitel.getRange("B12").setValue(id + " — " + megnev).setFontColor("#0d652d");
+  bevitel.getRange("B11").setValue("OK — sikeresen mentve").setFontColor("#0d652d");
+  bevitel.getRange("B3:B7").clearContent();
+
+  ss.toast(id + " — " + megnev, "Tétel mentve ✓", 4);
+}
+
+function generateTetelId_(ss) {
+  var sheet   = ss.getSheetByName("Árajánlat_tételek");
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return "T-0001";
+  var ids = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+  var max = 0;
+  for (var i = 0; i < ids.length; i++) {
+    var num = parseInt(ids[i][0].toString().replace("T-", ""));
+    if (!isNaN(num) && num > max) max = num;
+  }
+  return "T-" + String(max + 1).padStart(4, "0");
 }
 
 function navigalUgyfelBevitelre() {

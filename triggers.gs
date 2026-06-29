@@ -23,6 +23,11 @@ function onEdit(e) {
     if (value === "→ Új ügyfél létrehozása")  navigalUgyfelBevitelre();
   }
 
+  if (name === "Bevitel_Tétel" && cell === "B9") {
+    e.range.setValue(PLACEHOLDER);
+    if (value === "Tétel mentése") mentesTetel();
+  }
+
   if (name === "Projekt_Nézet" && cell === "B4") {
     e.range.setValue(PLACEHOLDER);
     if (value === "Projekt betöltése")    frissitProjektNezet();
@@ -32,5 +37,20 @@ function onEdit(e) {
   if (name === "Ügyfél_Nézet" && cell === "B4") {
     e.range.setValue(PLACEHOLDER);
     if (value === "Ügyfél betöltése") frissitUgyfelNezet();
+  }
+
+  if (name === "Árajánlat_Szerkesztő" && cell === "B7") {
+    e.range.setValue(PLACEHOLDER);
+    if (value === "Árajánlat mentése") mentesArajanlat();
+    if (value === "Sorok törlése")     torleArajanlatSorok();
+  }
+
+  // Katalógus auto-fill: ha a szerkesztőben az A oszlop valamelyik sorában választ
+  if (name === "Árajánlat_Szerkesztő") {
+    var sor = e.range.getRow();
+    var col = e.range.getColumn();
+    if (col === 1 && sor >= SOROK_KEZDETE && sor < SOROK_KEZDETE + SOROK_SZAMA && value) {
+      tetelAutoFill(e.source, sheet, sor, value);
+    }
   }
 }

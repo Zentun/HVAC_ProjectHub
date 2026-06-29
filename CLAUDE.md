@@ -152,24 +152,33 @@ Számla               → Projekt_ID
 - `README.md` — projekt leírás placeholder
 - `Ugyfelnyilvantarto_WorkDiary.docx` — eredeti tervezési dokumentum
 - `createHVACDatabase.gs` — létrehozza az adatbázis spreadsheet összes fülét
-- `bevitel.gs` — beviteli lapok és mentési makrók (ügyfél + projekt)
-- `projekt_nezet.gs` — projekt nézet lap: adatok, státusz pipeline, kapcsolódó rekordok
-- `triggers.gs` — onEdit trigger: Művelet dropdown cellák kezelik a beviteli és nézet lapok akcióit
+- `bevitel.gs` — beviteli lapok és mentési makrók (ügyfél + projekt + katalógus tétel), ID generálás
+- `projekt_nezet.gs` — Projekt_Nézet lap: adatok, státusz pipeline, kapcsolódó rekordok; helper függvények (_szekcioFejlec, _adatSor, stb.)
+- `ugyfel_nezet.gs` — Ügyfél_Nézet lap: ügyfél adatok + projektlista
+- `arajanlatszerkeszto.gs` — Árajánlat_Szerkesztő lap: sorok táblázata katalógussal, live összesítő, mentés
+- `triggers.gs` — onEdit trigger: összes Művelet dropdown és katalógus auto-fill kezelése
 - `start_claude.bat` — Claude Code indítása üdvözlő prompttal
+
+## Projekt neve formátum
+
+`<ügyfél neve> - <típus> - <leírás>` — pl. "Kovács Bt. - telepítés - Klíma csere"
+A Projektek sheet H oszlopa (Projekt_Név) tárolja ezt az értéket mentéskor.
+A Projekt_ID csak belső adatbázis-hivatkozásokhoz van.
 
 ## Elvégzett feladatok
 
 - [x] Adatbázis struktúra tervezése (összes fül, oszlopok, kapcsolatok)
 - [x] `createHVACDatabase.gs` megírva és futtatva — spreadsheet létrehozva
-- [x] `bevitel.gs` megírva: `Bevitel_Ügyfél` és `Bevitel_Projekt` lapok, ID auto-generálás, mentési makrók
-- [x] `end_session.bat` és `start_claude.bat` létrehozva
+- [x] `bevitel.gs` megírva: Bevitel_Ügyfél, Bevitel_Projekt, Bevitel_Tétel lapok
+- [x] `projekt_nezet.gs` megírva — Projekt_Nézet lap, státusz pipeline, kapcsolódó rekordok
+- [x] `ugyfel_nezet.gs` megírva — Ügyfél_Nézet lap
+- [x] `arajanlatszerkeszto.gs` megírva — Árajánlat_Szerkesztő lap
+- [x] `triggers.gs` megírva — onEdit trigger, minden dropdown és katalógus auto-fill
 
 ## Következő lépések
 
-- [x] `setupBevitelSheetsek()` futtatása a spreadsheet-ben (beviteli lapok létrehozása)
-- [x] Gombok helyett lenyíló menük (dropdown) a beviteli lapokon — `triggers.gs` kezeli az `onEdit` triggerrel
-- [x] `projekt_nezet.gs` megírva — Projekt_Nézet lap, státusz pipeline, kapcsolódó rekordok
-- [x] `triggers.gs` megírva — onEdit trigger, minden Művelet dropdown kezelése
-- `triggers.gs` + `projekt_nezet.gs` Apps Script szerkesztőbe másolása, `setupProjektNezet()` futtatása
-- `setupBevitelSheetsek()` újrafuttatása (dropdown frissítés) + triggers.gs telepítése után tesztelés
+- Összes .gs fájl másolása Apps Script szerkesztőbe
+- Futtatni: `setupBevitelSheetsek()`, `setupProjektNezet()`, `setupUgyfelNezet()`, `setupArajanlatSzerkeszto()`
+- onEdit trigger telepítése (Szerkesztők → Triggerek → onEdit → mentés)
+- Tesztelés: tétel felvétel → árajánlat sorok + mentés → projekt nézetben megjelenik
 - Dashboard fül tervezése és megírása
