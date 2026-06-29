@@ -28,4 +28,9 @@ function onEdit(e) {
     if (value === "Projekt betöltése")    frissitProjektNezet();
     if (value === "→ Következő státusz") kovetkezoStatusz();
   }
+
+  if (name === "Ügyfél_Nézet" && cell === "B4") {
+    e.range.setValue(PLACEHOLDER);
+    if (value === "Ügyfél betöltése") frissitUgyfelNezet();
+  }
 }
