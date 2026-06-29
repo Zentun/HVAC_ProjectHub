@@ -217,7 +217,7 @@ function mentesProjektet() {
 
   var id = generateProjektId_(ss);
   var ma = Utilities.formatDate(new Date(), "Europe/Budapest", "yyyy-MM-dd");
-  var projektNev = ugyfelNev + " - " + leiras;
+  var projektNev = ugyfelNev + " - " + tipus + " - " + leiras;
 
   projektek.appendRow([
     id,
@@ -226,10 +226,11 @@ function mentesProjektet() {
     tipus,
     "megkeresés",
     ma,
-    megjegyzes
+    megjegyzes,
+    projektNev
   ]);
 
-  bevitel.getRange("B13").setValue(id + " — " + projektNev).setFontColor("#0d652d");
+  bevitel.getRange("B13").setValue(projektNev).setFontColor("#0d652d");
   bevitel.getRange("B12").setValue("OK — sikeresen mentve").setFontColor("#0d652d");
   bevitel.getRange("B3").clearContent();
   bevitel.getRange("B5:B7").clearContent();

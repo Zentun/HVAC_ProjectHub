@@ -15,10 +15,11 @@ function setupProjektNezet() {
     .setHorizontalAlignment("center");
 
   // Projekt kiválasztó sor
-  sheet.getRange("A3").setValue("Projekt ID:").setFontWeight("bold");
+  sheet.getRange("A3").setValue("Projekt:").setFontWeight("bold");
   var projektSheet = ss.getSheetByName("Projektek");
+  _setupProjektNevFejlec(projektSheet);
   var projektRule = SpreadsheetApp.newDataValidation()
-    .requireValueInRange(projektSheet.getRange("A2:A1000"), true)
+    .requireValueInRange(projektSheet.getRange("H2:H1000"), true)
     .setAllowInvalid(false).build();
   sheet.getRange("B3")
     .setDataValidation(projektRule)
@@ -37,7 +38,7 @@ function setupProjektNezet() {
     .setBorder(true, true, true, true, false, false);
 
   // Placeholder
-  sheet.getRange("A6").setValue("← Válassz projektet (B3), majd Művelet → Projekt betöltése")
+  sheet.getRange("A6").setValue("← Válassz projektet (B3 lenyíló), majd Művelet → Projekt betöltése")
     .setFontColor("#888888").setFontStyle("italic");
 
   // Oszlopszélességek
@@ -57,8 +58,8 @@ function frissitProjektNezet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName("Projekt_Nézet");
 
-  var projektId = sheet.getRange("B3").getValue().toString().trim();
-  if (!projektId) {
+  var kivalasztottNev = sheet.getRange("B3").getValue().toString().trim();
+  if (!kivalasztottNev) {
     ss.toast("Válassz projektet!", "Figyelem", 3);
     return;
   }
@@ -67,15 +68,17 @@ function frissitProjektNezet() {
   var lastRow = Math.max(sheet.getLastRow(), 60);
   if (lastRow >= 6) sheet.getRange(6, 1, lastRow - 5, 6).clearContent().clearFormat();
 
-  // Projekt sor keresése
+  // Projekt sor keresése név (H oszlop) alapján
   var projektSheet = ss.getSheetByName("Projektek");
   var projektData = projektSheet.getDataRange().getValues();
   var projektRow = null;
+  var projektId = null;
   for (var i = 1; i < projektData.length; i++) {
-    if (projektData[i][0] == projektId) { projektRow = projektData[i]; break; }
+    if (!projektData[i][0]) continue;
+    if (projektData[i][7] == kivalasztottNev) { projektRow = projektData[i]; projektId = projektData[i][0]; break; }
   }
   if (!projektRow) {
-    sheet.getRange("A5").setValue("Nem található: " + projektId).setFontColor("#d93025");
+    sheet.getRange("A5").setValue("Nem található: " + kivalasztottNev).setFontColor("#d93025");
     return;
   }
 
@@ -98,7 +101,7 @@ function frissitProjektNezet() {
 
   var row = 6;
 
-  var projektNev = ugyfelRow ? ugyfelRow[1] + " - " + leiras : leiras;
+  var projektNev = ugyfelRow ? ugyfelRow[1] + " - " + tipus + " - " + leiras : tipus + " - " + leiras;
 
   // ── PROJEKT ADATOK ──────────────────────────────────────────
   _szekcioFejlec(sheet, row, "PROJEKT ADATOK", "#e8f0fe", "#1a73e8"); row++;
@@ -190,19 +193,20 @@ function frissitProjektNezet() {
     _uresSzekció(sheet, row); row++;
   }
 
-  ss.toast(projektId + " betöltve", "Projekt Nézet ✓", 3);
+  ss.toast(projektNev, "Projekt Nézet ✓", 3);
 }
 
 function kovetkezoStatusz() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName("Projekt_Nézet");
-  var projektId = sheet.getRange("B3").getValue().toString().trim();
-  if (!projektId) { ss.toast("Nincs kiválasztott projekt!", "Figyelem", 3); return; }
+  var kivalasztottNev = sheet.getRange("B3").getValue().toString().trim();
+  if (!kivalasztottNev) { ss.toast("Nincs kiválasztott projekt!", "Figyelem", 3); return; }
 
   var projektSheet = ss.getSheetByName("Projektek");
   var data = projektSheet.getDataRange().getValues();
   for (var i = 1; i < data.length; i++) {
-    if (data[i][0] == projektId) {
+    if (!data[i][0]) continue;
+    if (data[i][7] == kivalasztottNev) {
       var jelenlegi = data[i][4];
       var idx = STATUSZ_LISTA.indexOf(jelenlegi);
       if (idx < 0 || idx === STATUSZ_LISTA.length - 1) {
@@ -210,13 +214,13 @@ function kovetkezoStatusz() {
         return;
       }
       var ujStatusz = STATUSZ_LISTA[idx + 1];
-      projektSheet.getRange(i + 1, 4).setValue(ujStatusz);
+      projektSheet.getRange(i + 1, 5).setValue(ujStatusz);
       ss.toast(jelenlegi + "  →  " + ujStatusz, "Státusz frissítve ✓", 4);
       frissitProjektNezet();
       return;
     }
   }
-  ss.toast("Nem található: " + projektId, "Hiba", 3);
+  ss.toast("Nem található: " + kivalasztottNev, "Hiba", 3);
 }
 
 // ── Segédfüggvények ────────────────────────────────────────────
@@ -265,6 +269,12 @@ function _szurAdatokat(sheet, projektId, oszlop) {
 function _datum(val) {
   if (val instanceof Date) return Utilities.formatDate(val, "Europe/Budapest", "yyyy-MM-dd");
   return val;
+}
+
+function _setupProjektNevFejlec(projektSheet) {
+  projektSheet.getRange("H1")
+    .setValue("Projekt_Név")
+    .setFontWeight("bold").setFontColor("#888888");
 }
 
 function _statuszPipeline(sheet, row, aktiv) {
